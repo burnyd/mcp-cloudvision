@@ -1,0 +1,20 @@
+# pyproject.toml
+[project]
+name = "mcp-cloudvision"
+version = "0.1.0"
+description = "A Python project using uv for environment and dependency management"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+dependencies = [
+    # Add your project dependencies here, e.g.
+    "requests",
+    "httpx",
+    "typing",
+    "mcp", 
+    "dotenv",
+    "langchain",
+    "langchain_mcp_adapters", 
+    "langchain_google_genai",
+    "langchain_core", 
+    "langgraph"
+]
+requires-python = ">=3.10"
