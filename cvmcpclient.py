@@ -4,7 +4,7 @@ from mcp.client.stdio import stdio_client
 from langchain_mcp_adapters.tools import load_mcp_tools
 from langgraph.prebuilt import create_react_agent
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.messages import AIMessage
+from langchain_core.messages import AIMessage, HumanMessage
 import os
 
 # Ensure you have GOOGLE_API_KEY environment variable set
@@ -16,9 +16,11 @@ if not google_api_key:
 model = ChatGoogleGenerativeAI(model="gemini-2.5-flash-preview-04-17", google_api_key=google_api_key)
 server_params = StdioServerParameters(
     command="python3",
-    # Make sure to update to the full absolute path to your math_server.py file
     args=["cvpserver.py"],
 )
+
+## Initiate a empty list for conversation history
+conversationhistory = []
 
 async def run_agent():
     async with stdio_client(server_params) as (read, write):
@@ -38,7 +40,15 @@ async def run_agent():
                 if user_input.lower() == "exit":
                     break
 
-                agent_response = await agent.ainvoke({"messages": user_input})
+                #Append the user inputs and apply them to the list above this async function
+
+                conversationhistory.append(HumanMessage(content=user_input))
+
+                #I believe this stores the history?
+
+                agent_response = await agent.ainvoke({"messages": conversationhistory})
+
+
                 ai_messages = [msg for msg in agent_response['messages'] if isinstance(msg, AIMessage) and msg.content]
 
                 if ai_messages:
